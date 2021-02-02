@@ -1,0 +1,179 @@
+#: import sys sys
+#: import os os
+
+<MainWidget>:
+    rows: 2
+    app_cls: app
+    
+    TitleBar:
+         
+    MDGridLayout:
+        padding: sp(20)
+        spacing: sp(30)
+        cols: 2
+        md_bg_color: app.theme_cls.bg_dark
+
+        MDGridLayout:
+            cols: 1
+            spacing: sp(30)
+
+            MDGridLayout:
+                cols: 2
+                CB:
+                    id: cb_console
+                    text: "Console"
+                CB:
+                    id: cb_one_file
+                    text: "One File"
+            
+            TextLayout:
+                id: file_path
+                hint_text: "file      "
+
+            TextLayout:
+                id: file_name
+                hint_text: "name      "
+
+            TextLayout:
+                id: icon_path
+                hint_text: "icon      "
+
+            TextLayout:
+                id: data
+                hint_text: "added data   "
+                help: "Example: '(old;new), (old;new)'. All spaces will deleted."
+                multiline: True
+
+            TextLayout:
+                id: binary
+                hint_text: "added binaries  "
+                help: "Example: '(old;new), (old;new)'. All spaces will deleted."
+
+            TextLayout:
+                id: hidden-import
+                hint_text: "hidden imports"
+                help: "Example: 'kivymd; xlwt; xlrt'. All spces will deleted."
+
+            TextLayout:
+                id: exclude-module
+                hint_text: "excluded packages"
+                help: "Example: 'kivymd; xlwt; xlrt'. All spces will deleted."
+
+        MDGridLayout:
+            cols: 1  
+            spacing: sp(30) 
+
+            TextLayout:
+                id: command
+                eventable: False
+                size_hint_y: None
+                on_width: self.height = self.top - self.parent.parent.children[1].children[-2].y
+                hint_text: "command     "
+
+            TextLayout:
+                id: cmd
+                readonly: True
+                hint_text: "cmd      "
+            
+            MDGridLayout:
+                cols: 2
+                size_hint_y: None
+                on_width: self.height = self.parent.parent.children[1].children[0].top - self.y
+                spacing: sp(30)
+                
+                MDFloatLayout:   
+                    MDRectangleFlatButton:
+                        pos: self.parent.pos
+                        size_hint: 1, None
+                        height: self.parent.height - sp(8)
+                        text: "Create Exe"
+                        font_size: sp(24)
+                        font_name: app.font
+                        on_release: app.run_command(self.text)
+
+                MDFloatLayout: 
+                    MDRectangleFlatButton:
+                        pos: self.parent.pos
+                        size_hint: 1, None
+                        height: self.parent.height - sp(8)
+                        text: "Create Spec"
+                        font_size: sp(24)
+                        font_name: app.font
+                        on_release: app.run_command(self.text)
+
+
+<TitleBar>
+    cols: 2
+    size_hint: 1, .05
+    md_bg_color: app.theme_cls.bg_darkest
+
+    AnchorLayout:
+        anchor_x: "left"
+        TitleBarButton:
+            icon: "information-outline"
+            on_release: app.show_info()
+
+    AnchorLayout:
+        anchor_x: "right"
+        MDGridLayout:
+            cols: 3
+            adaptive_size: True
+
+            TitleBarButton:
+                icon: "window-minimize"
+                on_release: app.root_window.hide()
+
+            TitleBarButton:
+                icon: "crop-square"
+                on_release: app.change_size()
+            
+            TitleBarButton:
+                icon: "window-close"
+                on_release: app.stop() 
+
+
+<InfoBanner>:
+    size_hint: 1, 1
+    pos_hint: {"center_x": .5, "center_y": .5}
+    md_bg_color: (1, 1, 1, .2)
+    
+
+<TitleBarButton>:
+    theme_text_color: "Hint"
+    user_font_size: sp(20)
+
+
+<TextLayout@MDFloatLayout>:
+    eventable: True
+    hint_text: ""
+    readonly: False
+    help: " "
+
+    MDTextField:
+        name: "text_field"
+        on_text: app.update_command() if root.eventable else None
+        pos_hint: {"center_x": .5, "center_y": .5}
+        mode: "rectangle"
+        hint_text: root.hint_text
+        helper_text: root.help
+        helper_text_mode: "on_focus"
+        size_hint: None, 1
+        width: self.parent.width-dp(24)
+        multiline: True
+        readonly: root.readonly
+
+
+<CB@MDGridLayout>:
+    cols: 2
+    text: ""
+
+    MDCheckbox:
+        size_hint: None, None
+        size: root.height, root.height
+        on_active: app.update_command()
+    
+    MDLabel:
+        theme_text_color: "Hint"
+        text: root.text
+        font_size: sp(24) 
+        font_name: app.font
