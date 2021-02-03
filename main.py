@@ -74,25 +74,30 @@ class InfoBanner(MDGridLayout):
 
 class App(MDApp):
     def build(self):
-        # Доступ к file.txt только так
+        # Window settings
+        Window.bind(on_dropfile=self.on_file_drop)
+        Window.borderless = 1
+        Window.fullscreen = "auto"  # disable later
+        self.display_size = (0, 0)
+        Clock.schedule_once(self.apply_display_size)
+        
+        Clock.max_iteration = 1000000
+
+        # get font
         with open(resource_path('PyToExe.kv'), 'r') as file:
             Builder.load_string(file.read())
             pass
         self.font = resource_path('Roboto-Light.ttf')
 
+        # theming
         self.theme_cls.primary_palette = 'Gray'
         self.theme_cls.theme_style = 'Dark'
-
-        Window.borderless = 1
-        Window.fullscreen = "auto"  # disable later
-        self.display_size = (0, 0)
-        Clock.schedule_once(self.apply_display_size)
 
         self.command = ['--noconsole', '--onedir']
         self.path = ('', '')
         self.process = None
         Clock.schedule_interval(self.update_cmd, 2)
-        Clock.max_iteration = 1000000
+        
 
         self.main_widget = MainWidget()
         self.main_widget.ids['command'].children[0].text = \
@@ -106,6 +111,9 @@ class App(MDApp):
         Window.size = self.display_size
         Window.top, Window.left = 0, 0
 
+    def on_file_drop(self, window, filepath):
+        self.main_widget.ids['file_path'].children[0].text = filepath
+        
     def change_size(self):
         if Window.size == self.display_size:
             Window.size = (Window.width // 2, Window.height)
