@@ -103,7 +103,7 @@ class App(MDApp):
         self.main_widget.ids['command'].children[0].text = \
             '    '.join(self.command)
         return self.main_widget
-
+        
     def apply_display_size(self, *args):
         print('apply display size')
         self.display_size = Window.width-1, Window.height
